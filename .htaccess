@@ -1,0 +1,7 @@
+RewriteEngine On
+# Do not redirect index.php. This would cause a loop.
+RewriteCond %{REQUEST_URI} !^index.php
+# Do not redirect filenames that exist.
+RewriteCond %{REQUEST_FILENAME} !-f
+# Rewrite anything else to route to index.php
+RewriteRule ^(.*)$ /index.php?route=$1 [L]
