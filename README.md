@@ -14,6 +14,8 @@ Finally, it requires an SQL database with a table named **uri_routes** which sho
 | isRegularExpression | int | | |
 | customData | text | | |
 
+You should open /Classes/Database.php and change the **database** it connects to. A database is different from a table. A table belongs to a database. 
+
 customData is a blank string column. What would be in there, if necessary, if a JSON string that will be decoded and all variables will be passed into the view to be used as global PHP variables (if necessary). You can normally just leave this blank.
 
 isRegularExpression would tell the router that the **uri** is a regular expression and not a plain string. This is so you can parse URIs like the following: */forums/thread/334* and get the number (334) out of the URI.
