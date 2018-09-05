@@ -16,6 +16,10 @@
 		$route = "/";
 	}
 
+	if (substr($route, 0, 1) != "/"){ // Prepend a missing slash to the route if it doesn't have one
+		$route = "/" . $route;
+	}
+
 
 	$view = null;
 	$layout = null;
