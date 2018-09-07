@@ -28,7 +28,7 @@
 
 		public function renderView($path){
 			if (file_exists($path)){
-
+				
 				ob_start();
 				include($path);
 				$content = ob_get_contents();

@@ -9,40 +9,40 @@
 			$this->dbConnection = $databaseConnection;
 		}
 
-		public function doesRouteExist($route){
+		public function getAllRoutes(){
+			// This became necessary to handle regularly-expressed uris in PHP
+			// Get all of the uri routes
 			$statement = $this->dbConnection->prepare("
-				SELECT uri FROM uri_routes WHERE uri = ?
+				SELECT * FROM uri_routes
 			");
-			$statement->bind_param("s", $route);
 			$statement->execute();
 			$result = $statement->get_result();
-
-			return $result->num_rows > 0;
+			return $result->fetch_all(MYSQLI_ASSOC);
 		}
 
-		public function getViewPath($route){
-			$statement = $this->dbConnection->prepare("
-				SELECT view FROM uri_routes WHERE uri = ?
-			");
-			$statement->bind_param("s", $route);
-			$statement->execute();
-			$result = $statement->get_result();
-			$row = $result->fetch_assoc();
+		public function getRouteData($desiredRoute){
+			$routes = $this->getAllRoutes();
 
-			// Returns the file name. Give it a path
-			return __DIR__ . "/../Views/" . $row['view'];
+			// Loop through and try to match routes
+			foreach($routes as $routeData){
+				$uri = $routeData['uri'];
+				$isRegularExpression = (int) $routeData['isRegularExpression'];
+				if ($isRegularExpression == 1){
+					$matchSuccess = preg_match("@" . $uri . "@", $desiredRoute, $matches);
+					if ($matchSuccess == 1){ // Returns 1 if matched, 0 if not
+						return array_merge([
+							"parameters"=>$matches
+						], $routeData);
+					}
+				}else{
+					if (trim($uri) === trim($desiredRoute)){
+						return array_merge(["parameters"=>[]], $routeData);
+					}
+				}
+			}
+
+			return false; // Route doesn't exist
 		}
 
-		public function getLayoutPath($route){
-			$statement = $this->dbConnection->prepare("
-				SELECT layout FROM uri_routes WHERE uri = ?
-			");
-			$statement->bind_param("s", $route);
-			$statement->execute();
-			$result = $statement->get_result();
-			$row = $result->fetch_assoc();
-
-			return __DIR__ . "/../Layouts/" . $row['layout'];
-		}
 	}
 ?>

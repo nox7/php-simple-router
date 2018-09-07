@@ -6,6 +6,9 @@
 	$Router = new Router($connection);
 	$ViewEngine = new ViewEngine();
 
+	$ViewFolder = __DIR__ . "/Views"; // Where are the views?
+	$LayoutFolder = __DIR__ . "/Layouts"; // Where are the layouts?
+
 	$route = "/";
 
 	if (isset($_GET['route'])){
@@ -21,22 +24,42 @@
 	}
 
 
+	// Template variables to be defined
 	$view = null;
 	$layout = null;
-	if ($Router->doesRouteExist($route)){
-		$viewFile = $Router->getViewPath($route);
-		$layoutFile = $Router->getLayoutPath($route);
-		if ($viewFile === false){ // The path to the view file does not exist
-			$viewFile = $Router->getViewPath("/404"); // Get a 404 instead
-			$layoutFile = $Router->getLayoutPath("/404");
+
+	// Get the route row for the attempted route URI from the DB
+	$routeData = $Router->getRouteData($route);
+
+	if ($routeData === false){
+		// Route does not exist, get a 404 view
+		$routeData = $Router->getRouteData("/404");
+
+		if ($routeData === false){ // The 404 doesn't exist
+			http_response_code(404);
+			exit();
+		}else{
+			$viewFile = $ViewFolder . DIRECTORY_SEPARATOR . $routeData['view'];
+			$layoutFile = $LayoutFolder . DIRECTORY_SEPARATOR . $routeData['layout'];
 		}
-		$view = $ViewEngine->renderView($viewFile);
-	}else{ // The route doesn't exist
-		$viewFile = $Router->getViewPath("/404");
-		$layoutFile = $Router->getLayoutPath("/404");
-		$view = $ViewEngine->renderView($viewFile);
+	}else{
+		// Route exists
+		if (count($routeData['parameters'])){
+			// Merge parameters found (for regular expression routes) into the $_GET array
+			$_GET = array_merge($_GET, $routeData['parameters']);
+		}
+
+		$viewFile = $ViewFolder . DIRECTORY_SEPARATOR . $routeData['view'];
+		$layoutFile = $LayoutFolder . DIRECTORY_SEPARATOR . $routeData['layout'];
 	}
 
+	// Is there any custom data in the customData string?
+	$customData = json_decode($routeData['customData'], true);
+	if (is_array($customData)){
+		extract($customData);
+	}
+
+	$view = $ViewEngine->renderView($viewFile);
 	$headContents = $view['head'];
 	$bodyContents = $view['body'];
 
