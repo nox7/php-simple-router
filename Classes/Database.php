@@ -4,7 +4,7 @@
 		public static function connect(){
 			mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT); // Set MySQLi to throw exceptions
 			try{
-				$connection = new mysqli("localhost", "root", "", "_stockphotos");
+				$connection = new mysqli("localhost", "root", "", "DatabaseNameHere");
 
 				// Failure of connection detection
 				$connection->set_charset("utf-8");
