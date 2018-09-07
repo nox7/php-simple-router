@@ -1,20 +1,5 @@
 <?php
 
-	/*
-		Relies on a database called uri_routes
-
-		CREATE TABLE `uri_routes` (
-		  `uri` varchar(255) CHARACTER SET ascii NOT NULL,
-		  `view` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-		  `layout` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-		  `customData` text COLLATE utf8mb4_unicode_ci NOT NULL
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-		ALTER TABLE `uri_routes`
-		  ADD PRIMARY KEY (`uri`),
-		  ADD UNIQUE KEY `uri` (`uri`);
-	*/
-
 	class Router{
 
 		private $dbConnection;
