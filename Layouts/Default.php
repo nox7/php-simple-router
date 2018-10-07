@@ -2,6 +2,7 @@
 	global $headContents;
 	global $bodyContents;
 ?>
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<?= $headContents; ?>
