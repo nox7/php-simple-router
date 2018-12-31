@@ -2,12 +2,10 @@
 	require_once("Classes/Database.php");
 	require_once("Classes/Router.php");
 	require_once("Classes/ViewEngine.php");
-	$connection = SQLDatabase::connect();
-	$Router = new Router($connection);
+	$Router = new Router();
 	$ViewEngine = new ViewEngine();
 
-	$ViewFolder = __DIR__ . "/Views"; // Where are the views?
-	$LayoutFolder = __DIR__ . "/Layouts"; // Where are the layouts?
+	$documentRoot = $_SERVER['DOCUMENT_ROOT'];
 
 	$route = "/";
 
@@ -39,25 +37,23 @@
 			http_response_code(404);
 			exit();
 		}else{
-			$viewFile = $ViewFolder . DIRECTORY_SEPARATOR . $routeData['view'];
-			$layoutFile = $LayoutFolder . DIRECTORY_SEPARATOR . $routeData['layout'];
+			$viewFile = $documentRoot . $routeData['view'];
+			$layoutFile = $documentRoot . $routeData['layout'];
 		}
 	}else{
 		// Route exists
 		if (count($routeData['parameters'])){
-			// Merge parameters found (for regular expression routes) into the $_GET array
+			// Merge parameters found (for regular expression routes) into the global $_GET array
 			$_GET = array_merge($_GET, $routeData['parameters']);
 		}
 
-		$viewFile = $ViewFolder . DIRECTORY_SEPARATOR . $routeData['view'];
-		$layoutFile = $LayoutFolder . DIRECTORY_SEPARATOR . $routeData['layout'];
+		$viewFile = $documentRoot . $routeData['view'];
+		$layoutFile = $documentRoot . $routeData['layout'];
 	}
 
 	// Is there any custom data in the customData string?
-	$customData = json_decode($routeData['customData'], true);
-	if (is_array($customData)){
-		extract($customData);
-	}
+	$customData = $routeData['customData'];
+	extract($customData);
 
 	$view = $ViewEngine->renderView($viewFile);
 	$headContents = $view['head'];
