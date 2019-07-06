@@ -4,4 +4,4 @@ RewriteCond %{REQUEST_URI} !^index.php
 # Do not redirect filenames that exist.
 RewriteCond %{REQUEST_FILENAME} !-f
 # Rewrite anything else to route to index.php
-RewriteRule ^(.*)$ /index.php?route=$1 [L]
+RewriteRule ^(.*)$ /index.php?route=$1 [L,QSA]
