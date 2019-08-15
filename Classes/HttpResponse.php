@@ -6,7 +6,7 @@
 		}
 
 		public function setHeaderContentTypeToJSON(){
-			header("Content-Type: application/json");
+			header("Content-Type: application/json; charset=utf-8");
 		}
 
 		public function jsonSuccess($data = []){
