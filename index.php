@@ -1,5 +1,4 @@
 <?php
-	require_once("Classes/Database.php");
 	require_once("Classes/Router.php");
 	require_once("Classes/ViewEngine.php");
 	$Router = new Router();
